@@ -1,13 +1,11 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const Circle = require('./lib/circle')
-const Square = require('./lib/square')
-const Triangle = require('./lib/triangle')
 
-const svgGen = require('./lib/svg ')
+const {Circle, Square, Triangle} = require("./lib/shapes")
 
+const SVG = require('./lib/svg ')
 
-
+// prompt questions
 const questions = [
     {
         //Text for logo
@@ -36,14 +34,41 @@ const questions = [
 ]
 
 inquirer.prompt(questions)
-.then((response) =>{
-    if(response.shape){
-        var shapeOption = new Square(response.color).render();
-    }else if (response.shape){
-        var shapeOption = new Triangle(response.color).render();
-    }else if(response.shape){
-        var shapeOption = new Circle(response.color).render()
+.then(({text, textColor, Shapes, shapesColor}) => {
+    let shape;
+    switch(Shapes){
+        case 'Circle':
+        shape = new Circle();
+        shape.setColor(shapesColor);
+        break;
+        
+        case 'Square':
+        shape = new Square();
+        shape.setColor(shapesColor);
+        break;
+
+        default:
+        shape = new Triangle();
+        shape.setColor(shapesColor);
+        break;
+    }
+
+// generates the logo svg file
+    const svg = new SVG();
+    svg.setText(text, textColor);
+    svg.setShape(shape)
+    return writeToFile('./examples/log.svg', svg.render());
+    });
+
+// function to catch error
+
+function writeToFile(fileName, data) {
+    fs.writeFile(fileName, data, (err) => {
+    if (err) {
+      console.log('something went wrong', err);
     } else {
-    fs.writeFile("logo.svg", response)
+      console.log("Logo file has been generated");
+    };
+  })
 }
-})
+
