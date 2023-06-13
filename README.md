@@ -11,6 +11,9 @@
 
   - [Questions](#questions)
 
+  ## Image
+
+![Alt text](./img/img.1.png1.png)
 
   ## Description 
   This app generates a svg logo file.
